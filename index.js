@@ -17,9 +17,12 @@ async function chatgpt(body, key) {
 }
 
 login({ appState: JSON.parse(process.env.FB_STATE) }, (err, api) => {
-  if (err) return console.error(err);
-
-  api.listen(async (err, message) => {
+  if (err) {
+    return api.sendMessage("Salik Yawa kay naay error", message.threadID);
+  }
+  
+  try {
+    api.listen(async (err, message) => {
     if (err) throw err;
 
     if (message.type === 'message') {
@@ -41,6 +44,9 @@ login({ appState: JSON.parse(process.env.FB_STATE) }, (err, api) => {
       }
     }
   });
+  } catch (e) {
+    return api.sendMessage("Salik Yawa kay naay error", message.threadID);
+  }
 });
 
 app.get('/', (req, res) => {
